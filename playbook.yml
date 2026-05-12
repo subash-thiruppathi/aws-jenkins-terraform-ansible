@@ -1,11 +1,15 @@
 ---
 - name: Configure Web Server
   hosts: all
-  become: yes # This tells Ansible to use 'sudo' for root privileges
+  become: yes 
+  vars:
+    # Explicitly tell Ansible to use the modern Python 3 path
+    ansible_python_interpreter: /usr/bin/python3
 
   tasks:
     - name: Ensure Apache (httpd) is installed
-      ansible.builtin.yum:
+      # CHANGED: We are using 'dnf' instead of 'yum'
+      ansible.builtin.dnf:
         name: httpd
         state: present
 
@@ -22,6 +26,6 @@
           <html>
             <body style="background-color: #282c34; color: white; text-align: center; font-family: sans-serif; padding-top: 20%;">
               <h1>Mission Accomplished!</h1>
-              <p>This server was built by Terraform and configured by Ansible.</p>
+              <p>This server was built by Terraform, configured by Ansible, and deployed via Jenkins and GitHub.</p>
             </body>
           </html>
