@@ -1,6 +1,6 @@
 ---
 - name: Configure Web Server
-  hosts: webservers
+  hosts: all
   become: yes # This tells Ansible to use 'sudo' for root privileges
 
   tasks:
