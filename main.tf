@@ -16,7 +16,7 @@ resource "aws_security_group" "web_sg" {
   name        = "allow_web_traffic"
   description = "Allow HTTP and SSH inbound traffic"
 
-  # Allow HTTP (Port 80) for the website
+
   ingress {
     from_port   = 80
     to_port     = 80
