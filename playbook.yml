@@ -3,12 +3,10 @@
   hosts: all
   become: yes 
   vars:
-    # Explicitly tell Ansible to use the modern Python 3 path
     ansible_python_interpreter: /usr/bin/python3
 
   tasks:
     - name: Ensure Apache (httpd) is installed
-      # CHANGED: We are using 'dnf' instead of 'yum'
       ansible.builtin.dnf:
         name: httpd
         state: present
