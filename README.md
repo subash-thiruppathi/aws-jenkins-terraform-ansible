@@ -20,7 +20,7 @@ Before you begin, ensure you have the following installed and configured:
 ## 📂 Project Structure
 
 - `main.tf`: Terraform infrastructure definitions.
-- `playbook.yaml`: Ansible configuration tasks.
+- `playbook.yml`: Ansible configuration tasks.
 - `Jenkinsfile`: Pipeline automation.
 - `inventory.ini`: Static inventory for reference.
 
