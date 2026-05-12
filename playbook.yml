@@ -25,7 +25,7 @@
         content: |
           <html>
             <body style="background-color: #282c34; color: white; text-align: center; font-family: sans-serif; padding-top: 20%;">
-              <h1>Mission Accomplished!</h1>
+              <h1>Deployed with ZERO Clicks using GitHub Webhooks!</h1>
               <p>This server was built by Terraform, configured by Ansible, and deployed via Jenkins and GitHub.</p>
             </body>
           </html>

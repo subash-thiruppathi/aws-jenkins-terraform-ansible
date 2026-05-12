@@ -14,7 +14,7 @@ This project automates the provisioning and configuration of a web server on AWS
 
 ## Key Files
 - `main.tf`: Terraform configuration for AWS resources.
-- `playbook.yaml`: Ansible playbook for web server setup.
+- `playbook.yml`: Ansible playbook for web server setup.
 - `inventory.ini`: Static Ansible inventory (likely used for local testing or reference).
 - `Jenkinsfile`: Defines the CI/CD pipeline.
 - `jenkins_2.492.3_all.deb`: Jenkins installation package (deb).
