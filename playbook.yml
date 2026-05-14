@@ -1,29 +1,42 @@
 ---
-- name: Configure Web Server
+- name: Deploy Dockerized Node.js App
   hosts: all
   become: yes 
   vars:
     ansible_python_interpreter: /usr/bin/python3
 
   tasks:
-    - name: Ensure Apache (httpd) is installed
+    - name: Install Docker
       ansible.builtin.dnf:
-        name: httpd
+        name: docker
         state: present
 
-    - name: Ensure Apache is running and starts on boot
+    - name: Start and Enable Docker service
       ansible.builtin.service:
-        name: httpd
+        name: docker
         state: started
         enabled: yes
 
-    - name: Create a custom index.html file
+    - name: Ensure app directory exists on the EC2 server
+      ansible.builtin.file:
+        path: /home/ec2-user/app
+        state: directory
+        owner: ec2-user
+        group: ec2-user
+
+    - name: Copy the Node.js app folder to the EC2 server
       ansible.builtin.copy:
-        dest: /var/www/html/index.html
-        content: |
-          <html>
-            <body style="background-color: #282c34; color: white; text-align: center; font-family: sans-serif; padding-top: 20%;">
-              <h1>Deployed with ZERO Clicks using GitHub Webhooks!</h1>
-              <p>This server was built by Terraform, configured by Ansible, and deployed via Jenkins and GitHub.</p>
-            </body>
-          </html>
+        src: app/
+        dest: /home/ec2-user/app/
+
+    - name: Stop and remove the old container (if it exists)
+      ansible.builtin.command: docker rm -f node-api
+      ignore_errors: yes # It's okay if this fails on the first run
+
+    - name: Build the new Docker image
+      ansible.builtin.command: docker build -t my-node-app .
+      args:
+        chdir: /home/ec2-user/app/
+
+    - name: Run the Docker container
+      ansible.builtin.command: docker run -d --name node-api -p 80:80 my-node-app
