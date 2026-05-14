@@ -4,3 +4,6 @@
 .terraform.lock.hcl
 *.pem
 *.key
+
+
+node_modules/
