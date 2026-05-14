@@ -31,7 +31,7 @@
 
     - name: Stop and remove the old container (if it exists)
       ansible.builtin.command: docker rm -f node-api
-      ignore_errors: yes # It's okay if this fails on the first run
+      ignore_errors: yes
 
     - name: Build the new Docker image
       ansible.builtin.command: docker build -t my-node-app .
