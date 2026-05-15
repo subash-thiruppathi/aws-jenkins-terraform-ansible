@@ -60,6 +60,14 @@ resource "aws_instance" "my_first_server" {
   }
 }
 
+terraform {
+  backend "s3" {
+    bucket = "terraform-state-subash-636987"
+    key    = "prod/terraform.tfstate"
+    region = "ap-south-1"
+  }
+}
+
 output "server_ip" {
   description = "The public IP of the server"
   value       = aws_instance.my_first_server.public_ip

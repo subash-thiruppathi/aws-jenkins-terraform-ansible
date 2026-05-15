@@ -1,0 +1,51 @@
+name: Production CI/CD Pipeline
+
+# Trigger the pipeline automatically when you push to the main branch
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    # This spins up a temporary, blank Ubuntu server in GitHub's data center
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 1. Download the Code
+      uses: actions/checkout@v3
+
+    - name: 2. Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-south-1
+
+    - name: 3. Install Terraform
+      uses: hashicorp/setup-terraform@v2
+
+    - name: 4. Terraform Init (Connect to S3 Brain)
+      run: terraform init
+
+    - name: 5. Terraform Apply (Build Infrastructure)
+      run: terraform apply -auto-approve
+
+    - name: 6. Setup SSH Key for Ansible
+      run: |
+        mkdir -p ~/.ssh
+        # Inject the secret key into the temporary runner
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/my_aws_key
+        chmod 600 ~/.ssh/my_aws_key
+
+    - name: 7. Install Ansible on Runner
+      run: sudo apt update && sudo apt install ansible -y
+
+    - name: 8. Run Ansible (Deploy Docker Container)
+      run: |
+        # Dynamically grab the IP just like we did in Jenkins
+        SERVER_IP=$(terraform output -raw server_ip)
+        echo "Deploying to IP: $SERVER_IP"
+        
+        # Run the playbook
+        ansible-playbook -i "$SERVER_IP," playbook.yml -u ec2-user --private-key ~/.ssh/my_aws_key --ssh-common-args='-o StrictHostKeyChecking=no'
