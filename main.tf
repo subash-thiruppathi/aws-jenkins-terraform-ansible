@@ -52,7 +52,6 @@ resource "aws_instance" "my_first_server" {
 
   vpc_security_group_ids = [aws_security_group.web_sg.id]
 
-  # NEW: Attach the padlock to the server
   key_name = aws_key_pair.ansible_key.key_name
 
   tags = {
