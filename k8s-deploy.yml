@@ -1,0 +1,36 @@
+---
+# 1. The Deployment (The Containers)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-app-deployment
+spec:
+  replicas: 3 # Run 3 identical copies of our app!
+  selector:
+    matchLabels:
+      app: node-app
+  template:
+    metadata:
+      labels:
+        app: node-app
+    spec:
+      containers:
+      - name: node-api
+        image: my-k8s-node-app
+        imagePullPolicy: Never # Tells K8s to use the local image we just built
+        ports:
+        - containerPort: 80
+
+---
+# 2. The Service (The Load Balancer)
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-app-service
+spec:
+  type: NodePort # Opens a port on the Minikube server to the outside world
+  selector:
+    app: node-app
+  ports:
+    - port: 80
+      targetPort: 80
